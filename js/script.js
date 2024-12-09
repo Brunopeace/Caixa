@@ -8,6 +8,44 @@ function salvarDados() {
     localStorage.setItem('valorInicial', valorInicial);
 }
 
+
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Impede que o prompt apareça automaticamente
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Exibe o botão de instalação
+    const installButton = document.getElementById('installButton');
+    installButton.style.display = 'block';
+
+    installButton.addEventListener('click', async () => {
+        // Mostra o prompt de instalação
+        deferredPrompt.prompt();
+
+        // Espera pela resposta do usuário
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('Usuário aceitou instalar o app.');
+        } else {
+            console.log('Usuário recusou instalar o app.');
+        }
+
+        // Limpa o prompt
+        deferredPrompt = null;
+        installButton.style.display = 'none';
+    });
+});
+
+// Opcional: Verifica se o app está instalado
+window.addEventListener('appinstalled', () => {
+    console.log('PWA instalado com sucesso!');
+});
+
+
+
 function carregarDados() {
     if (localStorage.getItem('valorRestante')) {
         valorRestante = parseFloat(localStorage.getItem('valorRestante'));
