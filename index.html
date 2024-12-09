@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Caixa</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Controle de Caixa</h1>
+        <div class="input-section">
+            <label for="valorInicial" class="label">Valor Inicial (R$):</label>
+<input type="text" id="valorInicial" value="R$ 4.500,00" enable
+        </div>
+        <div class="input-section">
+<label for="valorRestante" class="label">Valor Restante (R$):</label>
+<input type="text" id="valorRestante" value="R$ 4.500,00" disabled>
+        </div>
+     
+<label for="valorPago" id="labelTotalPago">Total Pago:</label>
+<input type="text" id="valorPago" readonly>
+              
+        <div class="input-section">
+<label for="valorEntrada" class="label">Valor de Entrada (R$):</label>
+<input type="text" id="valorEntrada" placeholder="Digite o valor de entrada">
+            <button onclick="adicionarValor()">Adicionar</button>
+        </div>
+        <div class="lista-valores">
+            <h2>Foram pagos 👇🏻</h2>
+            <ul id="listaValores"></ul>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

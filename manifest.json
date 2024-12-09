@@ -1,0 +1,21 @@
+{
+  "name": "Gestor de Valores",
+  "short_name": "GestorValores",
+  "description": "Um aplicativo para gerenciar valores iniciais e entradas.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
