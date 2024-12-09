@@ -1,0 +1,203 @@
+#valorInicial{
+    background-color: #ffffff;
+    color: #04AE36;
+    font-weight: bold;
+}
+
+#valorRestante{
+    background-color: #ffffff;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+#valorPago {
+    background-color: #ffffff;
+    color: #1CA2F0;
+    font-weight: bold;
+}
+
+#labelTotalPago {
+    color: #1CA2F0;
+    font-weight: bold;
+}
+
+#valorEntrada {
+   font-weight: bold;
+   background: linear-gradient(45deg, rgb(35, 149, 104), rgb(4, 120, 223));
+   color: #ffffff;
+}
+
+input::placeholder {
+    color: #ffffff;
+}
+
+#listaValores{
+    color: #04AE36;
+    font-weight: bold;
+    max-height: 200px; /* Define a altura máxima */
+    overflow-y: auto; /* Adiciona a barra de rolagem */
+}
+
+h2 {
+    text-align: center;
+    color: #ffffff;
+}
+
+h1{
+    color: #ffffff;
+    flex-shrink: 0; /* Impede o encolhimento do h1 */
+}
+
+.label{
+    color: #ffffff;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #000000;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite rolagem quando necessário */
+    max-height: 90vh; /* Define uma altura máxima para o contêiner */
+}
+
+.input-section {
+    margin-bottom: 25px;
+}
+
+label {
+    font-size: 20px;
+    color: #333;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    background-color: #007BFF;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.lista-valores {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.lista-valores ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.lista-valores li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lista-valores li div {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.lista-valores button {
+    background-color: #dc3545;
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.lista-valores button.edit {
+    background-color: #ffc107;
+}
+
+.lista-valores button.edit:hover {
+    background-color: #e0a800;
+}
+
+.lista-valores button.delete:hover {
+    background-color: #c82333;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+    }
+
+    button {
+        padding: 10px;
+    }
+
+    .lista-valores li {
+        padding: 10px;
+    }
+
+    label {
+        font-size: 18px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        font-size: 16px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
