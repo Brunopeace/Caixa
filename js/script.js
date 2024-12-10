@@ -17,7 +17,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
 
-    // Exibe o botão de instalação
+    // Exibe o botão de instalação imediatamente ao carregar
     const installButton = document.getElementById('installButton');
     installButton.style.display = 'block';
 
@@ -33,7 +33,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
             console.log('Usuário recusou instalar o app.');
         }
 
-        // Limpa o prompt
+        // Limpa o prompt e esconde o botão
         deferredPrompt = null;
         installButton.style.display = 'none';
     });
