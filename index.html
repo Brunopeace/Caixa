@@ -1,43 +1,237 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Caixa</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Unidades</title>
+  <style>
+    /* Estilo geral */
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(135deg, #4CAF50, #81C784);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    /* Container principal */
+    .container {
+      background: #ffffff;
+      color: #333;
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .container h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+
+    /* Inputs */
+    .input-container {
+      position: relative;
+      margin: 15px 0;
+    }
+
+
+      .input-container input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+      
+    .input-container input[type="number"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .input-container input[type="number"]:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+      background-color: #fff;
+    }
+
+    .input-container label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #ffffff;
+      padding: 0 5px;
+      font-size: 14px;
+      color: #4CAF50;
+      pointer-events: none;
+    }
+
+    /* Botões */
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    button.reset {
+      background: #f44336;
+      margin-top: 15px;
+    }
+
+    button.reset:hover {
+      background: #e53935;
+    }
+
+    /* Resultado */
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* Estilo responsivo */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px 20px;
+      }
+
+      .container h1 {
+        font-size: 20px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+
+      .result {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-    
-    <button id="installButton" style="display: none; background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-    Instalar App
-</button>
-    
-    <div class="container">
-        <h1>Controle de Caixa</h1>
-        <div class="input-section">
-            <label for="valorInicial" class="label">Valor Inicial (R$):</label>
-<input type="text" id="valorInicial" value="R$ 4.500,00" enable
-        </div>
-        <div class="input-section">
-<label for="valorRestante" class="label">Valor Restante (R$):</label>
-<input type="text" id="valorRestante" value="R$ 4.500,00" disabled>
-        </div>
-     
-<label for="valorPago" id="labelTotalPago">Total Pago:</label>
-<input type="text" id="valorPago" readonly>
-              
-        <div class="input-section">
-<label for="valorEntrada" class="label">Valor de Entrada (R$):</label>
-<input type="text" id="valorEntrada" placeholder="Digite o valor de entrada">
-            <button onclick="adicionarValor()">Adicionar</button>
-        </div>
-        <div class="lista-valores">
-            <h2>Foram pagos 👇🏻</h2>
-            <ul id="listaValores"></ul>
-        </div>
+  <div class="container">
+    <h1>Controle de Unidades</h1>
+
+    <!-- Valor por unidade -->
+    <div class="input-container">
+      <label for="unitValueInput">Valor por Unidade (R$):</label>
+      <input type="number" id="unitValueInput" value="3" step="0.01" min="0">
     </div>
-    <script src="js/script.js"></script>
 
+    <!-- Quantidade total -->
+    <div class="input-container">
+      <label for="totalInput">Quantidade Total:</label>
+      <input type="number" id="totalInput" value="1500" readonly>
+    </div>
 
+    <!-- Entrada de unidades -->
+    <div class="input-container">
+      <label for="entryInput">Adicionar/Remover:</label>
+      <input type="text" id="entryInput" placeholder="para remover -">
+    </div>
+
+    <!-- Botões -->
+    <button onclick="updateUnits()">Adicionar/Remover</button>
+    <button class="reset" onclick="resetAll()">Zerar Tudo</button>
+
+    <!-- Resultados -->
+    <div class="result">
+      <p>Total em caixa: <span id="totalValue">0.00</span></p>
+    </div>
+  </div>
+
+  <script>
+    // Recuperar valores do localStorage
+    const unitValueInput = document.getElementById('unitValueInput');
+    const totalInput = document.getElementById('totalInput');
+    const entryInput = document.getElementById('entryInput');
+    const totalValue = document.getElementById('totalValue');
+
+    let unitValue = parseFloat(localStorage.getItem('unitValue')) || 3;
+    let totalUnits = parseInt(localStorage.getItem('totalUnits')) || 1500;
+    let totalInReais = parseFloat(localStorage.getItem('totalInReais')) || 0;
+
+    unitValueInput.value = unitValue;
+    totalInput.value = totalUnits;
+    totalValue.textContent = totalInReais.toFixed(2);
+
+    // Atualizar unidades
+    function updateUnits() {
+      const entry = parseInt(entryInput.value) || 0;
+
+      if (entry > 0 && entry > totalUnits) {
+        alert('Não há unidades suficientes para remover essa quantidade!');
+        return;
+      }
+
+      totalUnits -= entry; // Remove da quantidade total
+      totalInReais = (1500 - totalUnits) * unitValue; // Recalcula o total em reais
+
+      if (totalUnits < 0) {
+        alert('A quantidade total não pode ser negativa!');
+        return;
+      }
+
+      // Salvar no localStorage
+      localStorage.setItem('totalUnits', totalUnits);
+      localStorage.setItem('totalInReais', totalInReais);
+
+      // Atualizar na interface
+      totalInput.value = totalUnits;
+      totalValue.textContent = totalInReais.toFixed(2).replace('.', ','); // Exibir no formato brasileiro
+      entryInput.value = '';
+    }
+
+    // Zerar tudo
+    function resetAll() {
+      if (confirm('Você tem certeza que deseja zerar tudo?')) {
+        totalUnits = 1500;
+        totalInReais = 0;
+
+        localStorage.setItem('totalUnits', totalUnits);
+        localStorage.setItem('totalInReais', totalInReais);
+
+        totalInput.value = totalUnits;
+        totalValue.textContent = totalInReais.toFixed(2);
+        entryInput.value = '';
+      }
+    }
+
+    // Atualizar valor por unidade
+    unitValueInput.addEventListener('change', () => {
+      unitValue = parseFloat(unitValueInput.value) || 0;
+      localStorage.setItem('unitValue', unitValue);
+    });
+  </script>
 </body>
 </html>
