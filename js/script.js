@@ -1,194 +1,94 @@
-let valorInicial = 4500.00;
-let valorRestante = valorInicial;
-let valoresEntrada = [];
+let tempo = 0;
+let distancia = 0;
+let valor = 0;
+let intervalo;
+let emCorrida = false;
+let ultimaPosicao = null;
 
-function salvarDados() {
-    localStorage.setItem('valorRestante', valorRestante);
-    localStorage.setItem('valoresEntrada', JSON.stringify(valoresEntrada));
-    localStorage.setItem('valorInicial', valorInicial);
-}
+const tarifaMinuto = 0.75;
+const tarifaKm = 2.50;
 
+const tempoEl = document.getElementById("tempo");
+const distanciaEl = document.getElementById("distancia");
+const valorEl = document.getElementById("valor");
 
+const iniciarBtn = document.getElementById("iniciar");
+const pararBtn = document.getElementById("parar");
+const resetarBtn = document.getElementById("resetar");
 
-let deferredPrompt;
+iniciarBtn.addEventListener("click", () => {
+  if (emCorrida) return;
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Impede que o prompt apareça automaticamente
-    e.preventDefault();
-    deferredPrompt = e;
+  emCorrida = true;
+  iniciarBtn.disabled = true;
+  pararBtn.disabled = false;
 
-    // Exibe o botão de instalação imediatamente ao carregar
-    const installButton = document.getElementById('installButton');
-    installButton.style.display = 'block';
+  navigator.geolocation.watchPosition(pos => {
+    if (!emCorrida) return;
 
-    installButton.addEventListener('click', async () => {
-        // Mostra o prompt de instalação
-        deferredPrompt.prompt();
+    const { latitude, longitude } = pos.coords;
 
-        // Espera pela resposta do usuário
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            console.log('Usuário aceitou instalar o app.');
-        } else {
-            console.log('Usuário recusou instalar o app.');
-        }
+    if (ultimaPosicao) {
+      const d = calcularDistancia(ultimaPosicao.lat, ultimaPosicao.lng, latitude, longitude);
+      distancia += d;
+    }
 
-        // Limpa o prompt e esconde o botão
-        deferredPrompt = null;
-        installButton.style.display = 'none';
-    });
+    ultimaPosicao = { lat: latitude, lng: longitude };
+    atualizarDisplay();
+  }, console.error, { enableHighAccuracy: true });
+
+  intervalo = setInterval(() => {
+    tempo++;
+    atualizarDisplay();
+  }, 60000); // 1 minuto
 });
 
-// Opcional: Verifica se o app está instalado
-window.addEventListener('appinstalled', () => {
-    console.log('PWA instalado com sucesso!');
+pararBtn.addEventListener("click", () => {
+  clearInterval(intervalo);
+  emCorrida = false;
+  iniciarBtn.disabled = false;
+  pararBtn.disabled = true;
+  salvarCorrida();
 });
 
-
-
-function carregarDados() {
-    if (localStorage.getItem('valorRestante')) {
-        valorRestante = parseFloat(localStorage.getItem('valorRestante'));
-    }
-    if (localStorage.getItem('valoresEntrada')) {
-        valoresEntrada = JSON.parse(localStorage.getItem('valoresEntrada'));
-    }
-    if (localStorage.getItem('valorInicial')) {
-        valorInicial = parseFloat(localStorage.getItem('valorInicial'));
-        document.getElementById("valorInicial").value = formatarMoeda(valorInicial);
-    }
-    atualizarValoresEntrada();
-    document.getElementById("valorRestante").value = formatarMoeda(valorRestante);
-}
-
-function formatarMoeda(valor) {
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function desformatarMoeda(valor) {
-    valor = valor.replace(/[^\d,.-]/g, '');
-    valor = valor.replace('.', '').replace(',', '.');
-    return parseFloat(valor);
-}
-
-function formatarMoedaEnquantoDigita(valor) {
-    valor = valor.replace(/\D/g, '');
-    valor = (valor / 100).toFixed(2) + '';
-    valor = valor.replace('.', ',');
-    valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return 'R$ ' + valor;
-}
-
-document.getElementById("valorEntrada").addEventListener('input', function(e) {
-    let cursorPosition = this.selectionStart;
-    let valorDigitado = this.value;
-    
-    this.value = formatarMoedaEnquantoDigita(valorDigitado);
-    
-    let diff = this.value.length - valorDigitado.length;
-    this.setSelectionRange(cursorPosition + diff, cursorPosition + diff);
+resetarBtn.addEventListener("click", () => {
+  clearInterval(intervalo);
+  tempo = 0;
+  distancia = 0;
+  valor = 0;
+  ultimaPosicao = null;
+  emCorrida = false;
+  atualizarDisplay();
+  iniciarBtn.disabled = false;
+  pararBtn.disabled = true;
 });
 
-function adicionarValor() {
-    let valorEntrada = desformatarMoeda(document.getElementById("valorEntrada").value);
-    if (!isNaN(valorEntrada) && valorEntrada > 0) {
-        valorRestante -= valorEntrada;
-        
-        let dataVencimento = new Date().toLocaleDateString('pt-BR');
-        valoresEntrada.push({ valor: valorEntrada, data: dataVencimento });
-
-        atualizarValoresEntrada();
-        document.getElementById("valorRestante").value = formatarMoeda(valorRestante);
-        document.getElementById("valorEntrada").value = "";
-
-        salvarDados();
-    } else {
-        alert("Por favor, insira um valor válido de entrada.");
-    }
+function atualizarDisplay() {
+  valor = (tempo * tarifaMinuto) + (distancia * tarifaKm);
+  tempoEl.textContent = tempo;
+  distanciaEl.textContent = distancia.toFixed(2);
+  valorEl.textContent = valor.toFixed(2);
 }
 
-document.getElementById("valorEntrada").addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        adicionarValor();
-        event.preventDefault(); // Impede a ação padrão do Enter (como envio de formulário)
-    }
-});
-
-function atualizarValoresEntrada() {
-    let listaValores = document.getElementById("listaValores");
-    listaValores.innerHTML = '';
-
-    let totalPago = valoresEntrada.reduce((acc, curr) => acc + curr.valor, 0);
-    document.getElementById("valorPago").value = formatarMoeda(totalPago);
-
-    valoresEntrada.forEach((item, index) => {
-        let li = document.createElement('li');
-        li.innerHTML = `
-            ${formatarMoeda(item.valor)} - ${item.data}
-            <div>
-                <button class="edit" onclick="editarValor(${index})">Editar</button>
-                <button class="delete" onclick="excluirValor(${index})">Excluir</button>
-            </div>
-        `;
-        listaValores.appendChild(li);
-    });
+function salvarCorrida() {
+  const corridas = JSON.parse(localStorage.getItem("corridas")) || [];
+  corridas.push({
+    tempo,
+    distancia: distancia.toFixed(2),
+    valor: valor.toFixed(2),
+    data: new Date().toLocaleString()
+  });
+  localStorage.setItem("corridas", JSON.stringify(corridas));
 }
 
-function excluirValor(index) {
-    valorRestante += valoresEntrada[index].valor;
-    valoresEntrada.splice(index, 1);
-    document.getElementById("valorRestante").value = formatarMoeda(valorRestante);
-    atualizarValoresEntrada();
-    salvarDados();
-}
-
-function editarValor(index) {
-    let novoValor = desformatarMoeda(prompt("Digite o novo valor:", formatarMoeda(valoresEntrada[index].valor)));
-    if (!isNaN(novoValor) && novoValor > 0) {
-        valorRestante += valoresEntrada[index].valor - novoValor;
-        valoresEntrada[index].valor = novoValor;
-        document.getElementById("valorRestante").value = formatarMoeda(valorRestante);
-        atualizarValoresEntrada();
-        salvarDados();
-    } else {
-        alert("Por favor, insira um valor válido.");
-    }
-}
-
-function atualizarValorInicial() {
-    let valorInput = desformatarMoeda(document.getElementById("valorInicial").value);
-    if (!isNaN(valorInput)) {
-        valorInicial = valorInput;
-        valorRestante = valorInicial - valoresEntrada.reduce((acc, curr) => acc + curr.valor, 0);
-        document.getElementById("valorRestante").value = formatarMoeda(valorRestante);
-        salvarDados();
-    } 
-}
-
-document.getElementById("valorInicial").addEventListener('blur', function() {
-    let valorInput = document.getElementById("valorInicial").value;
-    document.getElementById("valorInicial").value = formatarMoeda(desformatarMoeda(valorInput));
-});
-
-document.getElementById("valorInicial").addEventListener('input', atualizarValorInicial);
-
-document.getElementById("valorEntrada").addEventListener('input', function() {
-    let valorDigitado = this.value;
-    this.value = formatarMoedaEnquantoDigita(valorDigitado);
-});
-
-document.getElementById("valorInicial").value = formatarMoeda(valorInicial);
-carregarDados();
-
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker
-            .register("./service-worker.js")
-            .then(registration => {
-                console.log("Service Worker registrado com sucesso:", registration.scope);
-            })
-            .catch(err => {
-                console.error("Falha ao registrar o Service Worker:", err);
-            });
-    });
+// Fórmula de Haversine para calcular distância
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
 }
