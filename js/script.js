@@ -4,6 +4,7 @@ let valor = 0;
 let intervalo;
 let emCorrida = false;
 let ultimaPosicao = null;
+let watchId = null;
 
 const tarifaMinuto = 0.75;
 const tarifaKm = 2.50;
@@ -22,8 +23,14 @@ iniciarBtn.addEventListener("click", () => {
   emCorrida = true;
   iniciarBtn.disabled = true;
   pararBtn.disabled = false;
+  iniciarBtn.textContent = "Corrida em andamento...";
 
-  navigator.geolocation.watchPosition(pos => {
+  if (!navigator.geolocation) {
+    alert("Geolocalização não suportada!");
+    return;
+  }
+
+  watchId = navigator.geolocation.watchPosition(pos => {
     if (!emCorrida) return;
 
     const { latitude, longitude } = pos.coords;
@@ -35,7 +42,12 @@ iniciarBtn.addEventListener("click", () => {
 
     ultimaPosicao = { lat: latitude, lng: longitude };
     atualizarDisplay();
-  }, console.error, { enableHighAccuracy: true });
+  }, err => {
+    alert("Erro ao acessar localização: " + err.message);
+    iniciarBtn.disabled = false;
+    pararBtn.disabled = true;
+    emCorrida = false;
+  }, { enableHighAccuracy: true });
 
   intervalo = setInterval(() => {
     tempo++;
@@ -45,22 +57,26 @@ iniciarBtn.addEventListener("click", () => {
 
 pararBtn.addEventListener("click", () => {
   clearInterval(intervalo);
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
   emCorrida = false;
   iniciarBtn.disabled = false;
+  iniciarBtn.textContent = "Iniciar Corrida";
   pararBtn.disabled = true;
   salvarCorrida();
 });
 
 resetarBtn.addEventListener("click", () => {
   clearInterval(intervalo);
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
   tempo = 0;
   distancia = 0;
   valor = 0;
   ultimaPosicao = null;
   emCorrida = false;
-  atualizarDisplay();
   iniciarBtn.disabled = false;
+  iniciarBtn.textContent = "Iniciar Corrida";
   pararBtn.disabled = true;
+  atualizarDisplay();
 });
 
 function atualizarDisplay() {
@@ -81,14 +97,14 @@ function salvarCorrida() {
   localStorage.setItem("corridas", JSON.stringify(corridas));
 }
 
-// Fórmula de Haversine para calcular distância
+// Fórmula de Haversine
 function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371; // km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
             Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
             Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
