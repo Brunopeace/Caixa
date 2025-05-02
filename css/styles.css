@@ -8,6 +8,11 @@ body {
   margin: 0;
 }
 
+h1 {
+    color: #ffffff;
+    font-weight: bold;
+}
+
 .container {
   background: #111;
   border-radius: 20px;
