@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Cartão Fidelidade</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      padding: 12px;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    
+    #btnAdmin {
+        border-radius: 50px;
+        width: 43px;
+        text-align: center;
+        align-item: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .selos {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .selo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #eee;
+      border: 2px dashed #aaa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .ativo {
+      background-color: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+
+    .mensagem {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Nome brilhante */
+    .brilhante {
+      background: linear-gradient(90deg, #facc15, #4ade80, #60a5fa, #f472b6, #facc15);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: brilho 3s ease-in-out infinite;
+      font-weight: bold;
+    }
+
+    @keyframes brilho {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Modal admin */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      font-size: 24px;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    .admin-input {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 500px) {
+      .modal-content {
+        width: 90%;
+        margin-top: 30%;
+      }
+    }  
+      
+    .section {
+      margin-top: 30px;
+      text-align: left;
+    }
+    h3 {
+      margin-bottom: 10px;
+    }
+    .lista-clientes {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      text-align: left;
+    }
+    .lista-clientes div {
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm2mOO3cL5kHPftq30Tk7hAW8nwJH1v-w",
+      authDomain: "cartao-fidelidade-94ef3.firebaseapp.com",
+      databaseURL: "https://cartao-fidelidade-94ef3-default-rtdb.firebaseio.com",
+      projectId: "cartao-fidelidade-94ef3",
+      storageBucket: "cartao-fidelidade-94ef3.appspot.com",
+      messagingSenderId: "801121898410",
+      appId: "1:801121898410:web:9e9636aa702128d346e5d3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.adicionarCliente = async function () {
+      const nome = document.getElementById("nomeCliente").value.trim().toLowerCase();
+      const selos = parseInt(document.getElementById("qtdSelos").value);
+
+      if (!nome || isNaN(selos) || selos < 0 || selos > 10) {
+        alert("Preencha corretamente os campos.");
+        return;
+      }
+
+      try {
+        await set(ref(db, 'clientes/' + nome), { nome, selos });
+        alert("Cliente salvo com sucesso!");
+        document.getElementById("nomeCliente").value = "";
+        document.getElementById("qtdSelos").value = "";
+      } catch (error) {
+        console.error("Erro ao salvar:", error);
+        alert("Erro ao salvar cliente.");
+      }
+    }
+
+    window.editarSelos = async function () {
+      const nome = document.getElementById("nomeEditar").value.trim().toLowerCase();
+      const novoSelos = parseInt(document.getElementById("novoValorSelos").value);
+
+      if (!nome || isNaN(novoSelos) || novoSelos < 0 || novoSelos > 10) {
+        alert("Dados inválidos.");
+        return;
+      }
+
+      try {
+        const snapshot = await get(child(ref(db), 'clientes/' + nome));
+        if (snapshot.exists()) {
+          const cliente = snapshot.val();
+          cliente.selos = novoSelos;
+          await set(ref(db, 'clientes/' + nome), cliente);
+          alert(`Selos atualizados para ${novoSelos}`);
+          document.getElementById("modalEditar").style.display = "none";
+        } else {
+          alert("Cliente não encontrado.");
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar selos:", error);
+      }
+    }
+
+    window.excluirCliente = async function () {
+      const nome = document.getElementById("nomeExcluir").value.trim().toLowerCase();
+      if (!nome) {
+        alert("Digite o nome do cliente.");
+        return;
+      }
+
+      if (!confirm(`Tem certeza que deseja excluir o cliente "${nome}"?`)) return;
+
+      try {
+        await set(ref(db, 'clientes/' + nome), null);
+        alert("Cliente excluído com sucesso.");
+        document.getElementById("nomeExcluir").value = "";
+      } catch (error) {
+        console.error("Erro ao excluir cliente:", error);
+        alert("Erro ao excluir cliente.");
+      }
+    }
+
+    window.onload = function () {
+      const lista = document.getElementById("listaClientes");
+      onValue(ref(db, 'clientes'), (snapshot) => {
+        lista.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          Object.values(data).forEach(cliente => {
+            const div = document.createElement("div");
+            div.textContent = `${cliente.nome.toUpperCase()} - ${cliente.selos} selos`;
+            lista.appendChild(div);
+          });
+        } else {
+          lista.innerHTML = '<em>Nenhum cliente cadastrado.</em>';
+        }
+      });
+    }
+
+    window.abrirModalEditar = function () {
+      document.getElementById("modalEditar").style.display = "block";
+    }
+
+    window.fecharModalEditar = function () {
+      document.getElementById("modalEditar").style.display = "none";
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Administrador</h2>
+
+    <div class="section">
+      <h3>Adicionar Cliente</h3>
+      <input type="text" id="nomeCliente" placeholder="Nome do cliente">
+      <input type="number" id="qtdSelos" placeholder="Quantidade de selos (0 a 10)" min="0" max="10">
+      <button onclick="adicionarCliente()">Salvar Cliente</button>
+    </div>
+
+    <div class="section">
+      <h3>Editar Selos</h3>
+      <button onclick="abrirModalEditar()">Abrir Edição de Selos</button>
+    </div>
+
+    <div class="section">
+      <h3>Excluir Cliente</h3>
+      <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
+      <button onclick="excluirCliente()">Excluir</button>
+    </div>
+
+    <div class="section">
+      <h3>Clientes Cadastrados</h3>
+      <div class="lista-clientes" id="listaClientes"></div>
+    </div>
+  </div>
+
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModalEditar()">&times;</span>
+      <h3>Editar Selos</h3>
+      <input type="text" id="nomeEditar" placeholder="Nome do cliente">
+      <input type="number" id="novoValorSelos" placeholder="Novo número de selos (0 a 10)" min="0" max="10">
+      <button onclick="editarSelos()">Atualizar Selos</button>
+    </div>
+  </div>
+</body>
+</html>
