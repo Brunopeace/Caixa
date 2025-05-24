@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Cartão Fidelidade</title>
+  <title>Admin</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -155,21 +155,52 @@
     h3 {
       margin-bottom: 10px;
     }
+    
     .lista-clientes {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      font-size: 15px;
-      text-align: left;
-    }
-    .lista-clientes div {
-      padding: 4px 0;
-      border-bottom: 1px solid #eee;
-    }
+  margin-top: 15px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 12px;
+  max-height: 90px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+  color: #444;
+  text-align: left;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f9f9f9;
+}
+
+.lista-clientes::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-clientes::-webkit-scrollbar-track {
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.lista-clientes::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+.lista-clientes div {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s;
+}
+
+.lista-clientes div:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+
+.lista-clientes div:hover {
+  background-color: #edf2f7;
+}
+
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -295,12 +326,6 @@
     </div>
 
     <div class="section">
-      <h3>Excluir Cliente</h3>
-      <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
-      <button onclick="excluirCliente()">Excluir</button>
-    </div>
-
-    <div class="section">
       <h3>Clientes Cadastrados</h3>
       <div class="lista-clientes" id="listaClientes"></div>
     </div>
@@ -309,10 +334,15 @@
   <div id="modalEditar" class="modal">
     <div class="modal-content">
       <span class="close" onclick="fecharModalEditar()">&times;</span>
+      
       <h3>Editar Selos</h3>
       <input type="text" id="nomeEditar" placeholder="Nome do cliente">
       <input type="number" id="novoValorSelos" placeholder="Novo número de selos (0 a 10)" min="0" max="10">
       <button onclick="editarSelos()">Atualizar Selos</button>
+     
+      <h3>Excluir Cliente</h3>
+      <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
+      <button onclick="excluirCliente()">Excluir</button>
     </div>
   </div>
 </body>
