@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cliente</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196f3">
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAm2mOO3cL5kHPftq30Tk7hAW8nwJH1v-w",
+    authDomain: "cartao-fidelidade-94ef3.firebaseapp.com",
+    databaseURL: "https://cartao-fidelidade-94ef3-default-rtdb.firebaseio.com",
+    projectId: "cartao-fidelidade-94ef3",
+    storageBucket: "cartao-fidelidade-94ef3.appspot.com",
+    messagingSenderId: "801121898410",
+    appId: "1:801121898410:web:9e9636aa702128d346e5d3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  async function verificarAtualizacao() {
+    try {
+      const snapshot = await get(child(ref(db), "atualizacao"));
+      if (snapshot.exists()) {
+        const dados = snapshot.val();
+        const versaoAtual = localStorage.getItem("versaoAtualizada");
+
+        if (versaoAtual !== dados.versao) {
+          const btn = document.createElement("button");
+          btn.textContent = dados.mensagem || "Atualizar Aplicativo";
+          btn.className = "botao-atualizacao";
+
+          btn.onclick = () => {
+            if (window.cordova && cordova.InAppBrowser) {
+              // Abre no navegador externo
+              cordova.InAppBrowser.open(dados.url, '_system');
+              localStorage.setItem("versaoAtualizada", dados.versao);
+              btn.remove();
+            } else {
+              // Fallback para navegador web normal
+              const a = document.createElement("a");
+              a.href = dados.url;
+              a.download = "";
+              a.target = "_blank";
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              localStorage.setItem("versaoAtualizada", dados.versao);
+              btn.remove();
+            }
+          };
+
+          document.querySelector(".container").appendChild(btn);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao verificar atualização:", error);
+    }
+  }
+
+  if (window.cordova) {
+    document.addEventListener('deviceready', verificarAtualizacao);
+  } else {
+    window.addEventListener('load', verificarAtualizacao);
+  }
+
+  window.buscarCliente = async function () {
+    const nome = document.getElementById("buscarNome").value.trim().toLowerCase();
+    if (!nome) return alert("Digite nome de usuário.");
+
+    try {
+      const snapshot = await get(child(ref(db), 'clientes/' + nome));
+      if (snapshot.exists()) {
+        mostrarCartao(snapshot.val());
+      } else {
+        alert("Cliente não encontrado.");
+        document.getElementById("cartaoFidelidade").style.display = "none";
+      }
+    } catch (error) {
+      console.error("Erro ao buscar cliente:", error);
+      alert("Erro ao buscar cliente.");
+    }
+  };
+
+  window.mostrarCartao = function (cliente) {
+    const nomeCliente = document.getElementById("nomeCliente");
+    const areaSelos = document.getElementById("areaSelos");
+
+    nomeCliente.textContent = cliente.nome.toUpperCase();
+    nomeCliente.classList.remove("brilhante");
+    areaSelos.innerHTML = "";
+
+    for (let i = 0; i < 10; i++) {
+      const selo = document.createElement("div");
+      selo.classList.add("selo");
+      if (i < cliente.selos) selo.classList.add("ativo");
+      selo.textContent = i + 1;
+      areaSelos.appendChild(selo);
+    }
+
+    document.getElementById("cartaoFidelidade").style.display = "block";
+
+    const infoIndicacao = document.getElementById("infoIndicacao");
+
+    if (cliente.indicacoes) {
+      if (cliente.indicacoes === 2) {
+        document.getElementById("mensagemIndicacao").textContent =
+          "Você indicou 2 pessoas e ganhou 1 mês grátis!";
+        document.getElementById("modalIndicacao").style.display = "block";
+      } else {
+        const texto = cliente.indicacoes === 1 ? "1 pessoa" : `${cliente.indicacoes} pessoas`;
+        infoIndicacao.textContent = `Você indicou ${texto}.`;
+      }
+    } else {
+      infoIndicacao.textContent = "";
+    }
+
+    document.getElementById("fecharModal").addEventListener("click", () => {
+      document.getElementById("modalIndicacao").style.display = "none";
+    });
+
+    if (cliente.selos === 10) {
+      nomeCliente.classList.add("brilhante");
+    }
+
+    if (cliente.selos === 3) {
+      document.getElementById("modal3Selos").style.display = "block";
+    } else if (cliente.selos === 6) {
+      document.getElementById("modal6Selos").style.display = "block";
+    } else if (cliente.selos === 10) {
+      document.getElementById("modal10Selos").style.display = "block";
+    }
+  };
+
+  window.acessarADM = function () {
+    const senha = prompt("Digite a senha de administrador:");
+    if (senha === "Bruno@2025") {
+      localStorage.setItem("paginaAnterior", window.location.href);
+      window.location.href = "admin.html";
+    } else if (senha !== null) {
+      alert("Senha incorreta.");
+    }
+  };
+
+  window.fecharModal = function (id) {
+    document.getElementById(id).style.display = "none";
+  };
+  
+  
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.error('Erro no Service Worker', err));
+    });
+  }
+
+</script>
+</head>
+<body>
+  <div class="container">
+    <h2>Consulte seu Cartão</h2>
+    <input type="text" id="buscarNome" placeholder="Digite seu nome de usuário">
+    <button onclick="buscarCliente()">Ver meus selos</button>
+
+    <div id="cartaoFidelidade" style="display:none;">
+      <h3 id="nomeCliente"></h3>
+      <div class="selos" id="areaSelos"></div>
+      <p id="infoIndicacao" style="margin-top: 10px;"></p>
+      <hr>
+    </div>
+
+    <button onclick="acessarADM()" class="botao-adm">ADM</button>
+  </div>
+
+  <!-- Modal por indicação -->
+  <div class="modal-indicacao" id="modalIndicacao">
+    <div class="modal-conteudo">
+      <span class="fechar" id="fecharModal">&times;</span>
+      <h2>Parabéns!</h2>
+      <p id="mensagemIndicacao">Você indicou 2 pessoas e ganhou <strong>1 mês grátis!</strong></p>
+    </div>
+  </div>
+
+  <!-- Modal para 3 selos -->
+  <div class="modal-indicacao" id="modal3Selos">
+    <div class="modal-conteudo">
+      <span class="fechar" onclick="fecharModal('modal3Selos')">&times;</span>
+      <h2>Parabéns!</h2>
+      <p>Você renovou por 3 meses e ganhou <strong>1 mês grátis!</strong></p>
+    </div>
+  </div>
+
+  <!-- Modal para 6 selos -->
+  <div class="modal-indicacao" id="modal6Selos">
+    <div class="modal-conteudo">
+      <span class="fechar" onclick="fecharModal('modal6Selos')">&times;</span>
+      <h2>Parabéns!</h2>
+      <p>Você renovou por 6 meses e ganhou <strong>2 meses grátis!</strong></p>
+    </div>
+  </div>
+
+  <!-- Modal para 10 selos -->
+  <div class="modal-indicacao" id="modal10Selos">
+    <div class="modal-conteudo">
+      <span class="fechar" onclick="fecharModal('modal10Selos')">&times;</span>
+      <h2>Parabéns!</h2>
+      <p>Você completou todos os selos e ganhou <strong>3 meses grátis!</strong></p>
+    </div>
+  </div>
+</body>
+</html>

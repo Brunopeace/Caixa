@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="css/adm.css">
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm2mOO3cL5kHPftq30Tk7hAW8nwJH1v-w",
+      authDomain: "cartao-fidelidade-94ef3.firebaseapp.com",
+      databaseURL: "https://cartao-fidelidade-94ef3-default-rtdb.firebaseio.com",
+      projectId: "cartao-fidelidade-94ef3",
+      storageBucket: "cartao-fidelidade-94ef3.appspot.com",
+      messagingSenderId: "801121898410",
+      appId: "1:801121898410:web:9e9636aa702128d346e5d3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.adicionarCliente = async function () {
+      const nome = document.getElementById("nomeCliente").value.trim().toLowerCase();
+      const selos = parseInt(document.getElementById("qtdSelos").value);
+      const indicacoes = parseInt(document.getElementById("qtdIndicacoes").value);
+
+      if (!nome || isNaN(selos) || selos < 0 || selos > 10) {
+        alert("Preencha corretamente os campos.");
+        return;
+      }
+
+      try {
+        await set(ref(db, 'clientes/' + nome), { nome, selos, indicacoes });
+        alert("Cliente salvo com sucesso!");
+        document.getElementById("nomeCliente").value = "";
+        document.getElementById("qtdSelos").value = "";
+        document.getElementById("qtdIndicacoes").value = "";
+      } catch (error) {
+        console.error("Erro ao salvar:", error);
+        alert("Erro ao salvar cliente.");
+      }
+    }
+
+    window.editarSelos = async function () {
+      const nome = document.getElementById("nomeEditar").value.trim().toLowerCase();
+      const novoSelos = parseInt(document.getElementById("novoValorSelos").value);
+      const inputIndicacoes = document.getElementById("novoValorIndicacoes").value;
+      const novasIndicacoes = inputIndicacoes === "" ? 0 : parseInt(inputIndicacoes);
+
+      if (!nome || isNaN(novoSelos) || novoSelos < 0 || novoSelos > 10) {
+        alert("Dados inválidos.");
+        return;
+      }
+
+      try {
+        const snapshot = await get(child(ref(db), 'clientes/' + nome));
+        if (snapshot.exists()) {
+          const cliente = snapshot.val();
+          cliente.selos = novoSelos;
+          cliente.indicacoes = novasIndicacoes;
+          await set(ref(db, 'clientes/' + nome), cliente);
+          alert(`Selos e indicações atualizados.`);
+          document.getElementById("modalEditar").style.display = "none";
+        } else {
+          alert("Cliente não encontrado.");
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar selos:", error);
+      }
+    }
+
+    window.excluirCliente = async function () {
+      const nome = document.getElementById("nomeExcluir").value.trim().toLowerCase();
+      if (!nome) return alert("Digite o nome do cliente.");
+      if (!confirm(`Deseja excluir o cliente "${nome}"?`)) return;
+
+      try {
+        await set(ref(db, 'clientes/' + nome), null);
+        alert("Cliente excluído com sucesso.");
+        document.getElementById("nomeExcluir").value = "";
+      } catch (error) {
+        console.error("Erro ao excluir cliente:", error);
+        alert("Erro ao excluir cliente.");
+      }
+    }
+
+    window.onload = function () {
+      const lista = document.getElementById("listaClientes");
+      onValue(ref(db, 'clientes'), (snapshot) => {
+        lista.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          Object.values(data).forEach(cliente => {
+            const div = document.createElement("div");
+            div.textContent = `${cliente.nome.toUpperCase()} - ${cliente.selos} selos - ${cliente.indicacoes || 0} indicações`;
+            lista.appendChild(div);
+          });
+        } else {
+          lista.innerHTML = '<em>Nenhum cliente cadastrado.</em>';
+        }
+      });
+    }
+
+    window.abrirModalEditar = function () {
+      document.getElementById("modalEditar").style.display = "block";
+    }
+
+    window.fecharModalEditar = function () {
+      document.getElementById("modalEditar").style.display = "none";
+    }
+
+    window.filtrarClientes = function () {
+      const termo = document.getElementById("buscaCliente").value.trim().toLowerCase();
+      const divs = document.querySelectorAll("#listaClientes div");
+      divs.forEach(div => {
+        const texto = div.textContent.toLowerCase();
+        div.style.display = texto.includes(termo) ? "block" : "none";
+      });
+    }
+
+    window.exportarBackup = async function () {
+      try {
+        const snapshot = await get(child(ref(db), 'clientes'));
+        if (!snapshot.exists()) return alert("Nenhum cliente encontrado.");
+
+        const dados = snapshot.val();
+        const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+        const nomeArquivo = "backup_fideliza.json";
+
+        if (window.cordova) {
+          window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dir) {
+            dir.getFile(nomeArquivo, { create: true }, function (file) {
+              file.createWriter(function (writer) {
+                writer.onwriteend = function () {
+                  cordova.plugins.fileOpener2.open(
+                    cordova.file.externalDataDirectory + nomeArquivo,
+                    'application/json',
+                    {
+                      error: (e) => alert("Erro ao abrir: " + JSON.stringify(e)),
+                      success: () => alert("Backup exportado com sucesso!")
+                    }
+                  );
+                };
+                writer.onerror = (e) => alert("Erro ao salvar: " + e.toString());
+                writer.write(blob);
+              });
+            });
+          }, (err) => alert("Erro ao acessar armazenamento: " + err.message));
+        } else {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = nomeArquivo;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error("Erro ao exportar backup:", error);
+        alert("Erro ao exportar backup.");
+      }
+    }
+
+    window.importarBackup = async function () {
+      const input = document.getElementById("importarArquivo");
+      const file = input.files[0];
+      if (!file) return alert("Selecione um arquivo JSON.");
+
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          for (const nome in data) {
+            const cliente = data[nome];
+            await set(ref(db, 'clientes/' + nome), cliente);
+          }
+          alert("Backup importado com sucesso!");
+        } catch (error) {
+          console.error("Erro ao importar:", error);
+          alert("Erro ao importar backup.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    window.salvarAtualizacao = async function () {
+      const url = document.getElementById("urlAtualizacao").value.trim();
+      const mensagem = document.getElementById("mensagemAtualizacao").value.trim();
+      const versao = new Date().getTime().toString();
+
+      if (!url || !mensagem) {
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      try {
+        await set(ref(db, "atualizacao"), { url, mensagem, versao });
+        alert("Atualização publicada com sucesso!");
+        document.getElementById("urlAtualizacao").value = "";
+        document.getElementById("mensagemAtualizacao").value = "";
+      } catch (error) {
+        console.error("Erro ao publicar:", error);
+        alert("Erro ao publicar atualização.");
+      }
+    }
+    
+    
+    
+
+  window.voltarPaginaAnterior = function () {
+  const pagina = localStorage.getItem("paginaAnterior");
+  if (pagina) {
+    window.location.href = pagina;
+  } else {
+    history.back();
+  }
+}
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Administrador</h2>
+    <button onclick="voltarPaginaAnterior()" class="botao-voltar">Voltar</button>
+    <div class="section">
+      <h3>Adicionar Cliente</h3>
+      <input type="text" id="nomeCliente" placeholder="Nome do cliente">
+      <input type="number" id="qtdSelos" placeholder="Quantidade de selos (0 a 10)" min="0" max="10">
+      <input type="number" id="qtdIndicacoes" placeholder="Indicações (0 ou mais)" min="0">
+      <button onclick="adicionarCliente()">Salvar Cliente</button>
+    </div>
+
+    <div class="section">
+      <button onclick="abrirModalEditar()">Menu</button>
+    </div>
+
+    <div class="section">
+      <h3>Clientes Cadastrados</h3>
+      <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()" />
+      <div class="lista-clientes" id="listaClientes"></div>
+    </div>
+
+    <div class="section">
+      <h3>Backup</h3>
+      <button onclick="exportarBackup()">Fazer Backup</button>
+      <input type="file" id="importarArquivo" accept=".json" onchange="importarBackup()" style="margin-top: 10px;">
+    </div>
+
+    <div class="section">
+      <h3>Atualização do Aplicativo</h3>
+      <input type="text" id="urlAtualizacao" placeholder="Link do APK (.apk)">
+      <input type="text" id="mensagemAtualizacao" placeholder="Mensagem (ex: Nova versão disponível)">
+      <button onclick="salvarAtualizacao()">Publicar Atualização</button>
+    </div>
+  </div>
+
+  <!-- Modal de edição -->
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModalEditar()">&times;</span>
+
+      <h3>Editar Selos e Indicações</h3>
+      <input type="text" id="nomeEditar" placeholder="Nome do cliente">
+      <input type="number" id="novoValorSelos" placeholder="Novo número de selos (0 a 10)" min="0" max="10">
+      <input type="number" id="novoValorIndicacoes" placeholder="Novo número de indicações" min="0">
+      <button onclick="editarSelos()">Atualizar Cliente</button>
+
+      <h3>Excluir Cliente</h3>
+      <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
+      <button onclick="excluirCliente()">Excluir</button>
+    </div>
+  </div>
+</body>
+</html>

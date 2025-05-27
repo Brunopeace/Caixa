@@ -1,0 +1,323 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background: #000000;
+  padding: 20px;
+  color: #333;
+  text-align: center;
+  margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+.modal-indicacao {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+}
+
+.modal-conteudo {
+  background: linear-gradient(135deg, #fffaf0, #ffe9c9);
+  margin: 10% auto;
+  padding: 35px 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: aparecer 0.4s ease-out;
+  border: 3px solid #ff9800;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #5c3600;
+}
+
+.modal-conteudo h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #d35400;
+  animation: brilho 1.5s infinite alternate;
+}
+
+.modal-conteudo p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.fechar {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 26px;
+  color: #d35400;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.3s;
+}
+
+.fechar:hover {
+  color: #b84300;
+  transform: scale(1.2);
+}
+
+@keyframes aparecer {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes brilho {
+  from { text-shadow: 0 0 10px #ff9800; }
+  to { text-shadow: 0 0 20px #ff6f00; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.container {
+  max-width: 460px;
+  margin: auto;
+  background: #fff;
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  font-size: 24px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.botao-adm {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #2563eb;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  margin: 10px auto 0;
+}
+
+.botao-adm:hover {
+  background: #1e40af;
+}
+
+
+.btnAtualizarApp {
+  background-color: #117000;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button, .whatsapp-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover, .whatsapp-button:hover {
+  background: #1e40af;
+}
+
+
+.selos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.selo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  border: 2px dashed #94a3b8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #555;
+}
+
+.ativo {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.mensagem {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.brilhante {
+  background: linear-gradient(90deg, #facc15, #4ade80, #60a5fa, #f472b6, #facc15);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: brilho 3s ease-in-out infinite;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+@keyframes brilho {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: #ffffff;
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 16px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.4s ease;
+  position: relative;
+}
+
+.modal-content h3 {
+  color: #10b981;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #333;
+}
+
+.modal-content ul {
+  list-style: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.modal-content ul li::before {
+  content: '✔';
+  color: #10b981;
+  margin-right: 8px;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 24px;
+  color: red;
+  cursor: pointer;
+}
+
+.modal .close:hover {
+  color: #000;
+}
+
+.whatsapp-button {
+  background-color: #25D366;
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none;
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+iframe {
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  height: 400px;
+}
+
+@media (max-width: 500px) {
+  .modal-content {
+    width: 90%;
+    margin-top: 30%;
+  }
+
+  iframe {
+    height: 450px;
+  }
+}
