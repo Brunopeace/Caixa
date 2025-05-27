@@ -111,7 +111,11 @@ input:focus {
 
 #btnInstalar {
   display: none;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #00b02c;
   color: white;
   border: none;
   border-radius: 12px;
