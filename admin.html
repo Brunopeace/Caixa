@@ -186,30 +186,6 @@
       reader.readAsText(file);
     }
 
-    window.salvarAtualizacao = async function () {
-      const url = document.getElementById("urlAtualizacao").value.trim();
-      const mensagem = document.getElementById("mensagemAtualizacao").value.trim();
-      const versao = new Date().getTime().toString();
-
-      if (!url || !mensagem) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        await set(ref(db, "atualizacao"), { url, mensagem, versao });
-        alert("Atualização publicada com sucesso!");
-        document.getElementById("urlAtualizacao").value = "";
-        document.getElementById("mensagemAtualizacao").value = "";
-      } catch (error) {
-        console.error("Erro ao publicar:", error);
-        alert("Erro ao publicar atualização.");
-      }
-    }
-    
-    
-    
-
   window.voltarPaginaAnterior = function () {
   const pagina = localStorage.getItem("paginaAnterior");
   if (pagina) {
@@ -246,13 +222,6 @@
       <h3>Backup</h3>
       <button onclick="exportarBackup()">Fazer Backup</button>
       <input type="file" id="importarArquivo" accept=".json" onchange="importarBackup()" style="margin-top: 10px;">
-    </div>
-
-    <div class="section">
-      <h3>Atualização do Aplicativo</h3>
-      <input type="text" id="urlAtualizacao" placeholder="Link do APK (.apk)">
-      <input type="text" id="mensagemAtualizacao" placeholder="Mensagem (ex: Nova versão disponível)">
-      <button onclick="salvarAtualizacao()">Publicar Atualização</button>
     </div>
   </div>
 
