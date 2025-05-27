@@ -25,52 +25,6 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  async function verificarAtualizacao() {
-    try {
-      const snapshot = await get(child(ref(db), "atualizacao"));
-      if (snapshot.exists()) {
-        const dados = snapshot.val();
-        const versaoAtual = localStorage.getItem("versaoAtualizada");
-
-        if (versaoAtual !== dados.versao) {
-          const btn = document.createElement("button");
-          btn.textContent = dados.mensagem || "Atualizar Aplicativo";
-          btn.className = "botao-atualizacao";
-
-          btn.onclick = () => {
-            if (window.cordova && cordova.InAppBrowser) {
-              // Abre no navegador externo
-              cordova.InAppBrowser.open(dados.url, '_system');
-              localStorage.setItem("versaoAtualizada", dados.versao);
-              btn.remove();
-            } else {
-              // Fallback para navegador web normal
-              const a = document.createElement("a");
-              a.href = dados.url;
-              a.download = "";
-              a.target = "_blank";
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              localStorage.setItem("versaoAtualizada", dados.versao);
-              btn.remove();
-            }
-          };
-
-          document.querySelector(".container").appendChild(btn);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao verificar atualização:", error);
-    }
-  }
-
-  if (window.cordova) {
-    document.addEventListener('deviceready', verificarAtualizacao);
-  } else {
-    window.addEventListener('load', verificarAtualizacao);
-  }
-
   window.buscarCliente = async function () {
     const nome = document.getElementById("buscarNome").value.trim().toLowerCase();
     if (!nome) return alert("Digite nome de usuário.");
@@ -163,8 +117,6 @@
   }
   
   
-  
- 
   let deferredPrompt;
   const btnInstalar = document.getElementById('btnInstalar');
 
