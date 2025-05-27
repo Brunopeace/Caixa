@@ -161,6 +161,38 @@
         .catch(err => console.error('Erro no Service Worker', err));
     });
   }
+  
+  
+  
+ 
+  let deferredPrompt;
+  const btnInstalar = document.getElementById('btnInstalar');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // Impede o prompt automático
+    deferredPrompt = e;
+    btnInstalar.style.display = 'block'; // Mostra o botão
+  });
+
+  btnInstalar.addEventListener('click', async () => {
+    btnInstalar.style.display = 'none';
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('Usuário aceitou instalar');
+      } else {
+        console.log('Usuário recusou');
+      }
+      deferredPrompt = null;
+    }
+  });
+
+  // Esconde o botão se já estiver instalado
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA instalado');
+    btnInstalar.style.display = 'none';
+  });
 
 </script>
 </head>
@@ -188,6 +220,8 @@
       <p id="mensagemIndicacao">Você indicou 2 pessoas e ganhou <strong>1 mês grátis!</strong></p>
     </div>
   </div>
+  
+  <button id="btnInstalar" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">Instalar App</button>
 
   <!-- Modal para 3 selos -->
   <div class="modal-indicacao" id="modal3Selos">
