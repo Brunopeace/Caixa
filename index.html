@@ -145,14 +145,29 @@
     console.log('PWA instalado');
     btnInstalar.style.display = 'none';
   });
-
+  
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const splash = document.getElementById('splash');
+      splash.style.opacity = '0';
+      setTimeout(() => splash.remove(), 1000); // remove depois do fade
+    }, 3000); // 3 segundos
+  });
 </script>
 </head>
 <body>
+    
+<div id="splash">
+  <div class="splash-content">
+    <img src="icons/icon-192.png" alt="Logo" class="splash-logo">
+    <h1 class="splash-title">Fideliza</h1>
+  </div>
+</div>
+    
   <div class="container">
     <h2>Consulte seu Cartão</h2>
     <input type="text" id="buscarNome" placeholder="Digite seu nome de usuário">
-    <button onclick="buscarCliente()">Ver meus selos</button>
+    <button class="buscarNome" onclick="buscarCliente()">Ver meus selos</button>
 
     <div id="cartaoFidelidade" style="display:none;">
       <h3 id="nomeCliente"></h3>
@@ -169,10 +184,9 @@
   <!-- Modal por indicação -->
   <div class="modal-indicacao" id="modalIndicacao">
     <div class="modal-conteudo">
-      <span class="fechar" id="fecharModal">&times;</span>
+ <span class="fechar" id="fecharModal">&times;</span>
       <h2>Parabéns!</h2>
       <p id="mensagemIndicacao">Você indicou 2 pessoas e ganhou <strong>1 mês grátis!</strong></p>
-      
       <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20ao%20indicar%202%20pessoas%20%20%20." 
        target="_blank" 
        class="btn-whatsapp">
