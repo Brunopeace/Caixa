@@ -212,21 +212,6 @@
       <button onclick="abrirModalEditar()">Menu</button>
     </div>
 
-    <div class="section">
-      <h3>Clientes Cadastrados</h3>
-      <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()" />
-      <div class="lista-clientes" id="listaClientes"></div>
-    </div>
-
-    <div class="section">
-      <h3>Fazer Backup</h3>
-      <button onclick="exportarBackup()">Fazer Backup</button>
-      
-      <h3>Importar Backup</h3>
-      <input type="file" id="importarArquivo" accept=".json" onchange="importarBackup()" style="margin-top: 10px;">
-    </div>
-  </div>
-
   <!-- Modal de edição -->
   <div id="modalEditar" class="modal">
     <div class="modal-content">
@@ -241,6 +226,22 @@
       <h3>Excluir Cliente</h3>
       <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
       <button onclick="excluirCliente()">Excluir</button>
+
+<div class="section">
+      <h3>Clientes Cadastrados</h3>
+      <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()" />
+      <div class="lista-clientes" id="listaClientes"></div>
+    </div>
+
+    <div class="section">
+      <h3>Fazer Backup</h3>
+      <button onclick="exportarBackup()">Fazer Backup</button>
+      
+      <h3>Importar Backup</h3>
+      <input type="file" id="importarArquivo" accept=".json" onchange="importarBackup()" style="margin-top: 10px;">
+    </div>
+  </div>
+
     </div>
   </div>
 </body>
