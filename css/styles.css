@@ -109,6 +109,31 @@ input:focus {
 }
 
 
+
+.btn-whatsapp {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 18px;
+  background-color: #25D366;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-whatsapp:hover {
+  background-color: #1ebe5d;
+  transform: scale(1.03);
+}
+
+.btn-whatsapp:active {
+  transform: scale(0.97);
+}
+
 #btnInstalar {
   margin-left: 170px;
   margin-top: 40px;
@@ -153,7 +178,6 @@ input:focus {
   background: #1e40af;
 }
 
-
 .btnAtualizarApp {
   background-color: #117000;
   color: #fff;
@@ -182,7 +206,6 @@ button, .whatsapp-button {
 button:hover, .whatsapp-button:hover {
   background: #1e40af;
 }
-
 
 .selos {
   display: grid;
