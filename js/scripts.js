@@ -99,14 +99,28 @@ document.getElementById("fecharModal").addEventListener("click", () => {
   document.getElementById("modalIndicacao").style.display = "none";
 });
 
-// 🔹 Acesso ao painel administrativo
-window.acessarADM = function () {
+// 🔐 Função para gerar o hash SHA-256 da senha digitada
+async function gerarHash(texto) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(texto);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+const SENHA_HASH = "cdbd3bbf30c1038474ca3e79bb0209c6493493700450a9d7bf6090382c663dd2";
+
+// 🔐 Acesso ao Painel Administrativo
+window.acessarADM = async function () {
   const senha = prompt("Digite a senha de administrador:");
-  if (senha === "Bruno@2025") {
+  if (senha === null) return;
+
+  const hashDigitado = await gerarHash(senha);
+
+  if (hashDigitado === SENHA_HASH) {
     localStorage.setItem("paginaAnterior", window.location.href);
     window.location.href = "admin.html";
-  } else if (senha !== null) {
-    alert("Senha incorreta.");
+  } else {
+    alert("❌ Senha incorreta. Acesso negado.");
   }
 };
 
