@@ -6,163 +6,17 @@
   <title>Cliente</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196f3">
-
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAm2mOO3cL5kHPftq30Tk7hAW8nwJH1v-w",
-    authDomain: "cartao-fidelidade-94ef3.firebaseapp.com",
-    databaseURL: "https://cartao-fidelidade-94ef3-default-rtdb.firebaseio.com",
-    projectId: "cartao-fidelidade-94ef3",
-    storageBucket: "cartao-fidelidade-94ef3.appspot.com",
-    messagingSenderId: "801121898410",
-    appId: "1:801121898410:web:9e9636aa702128d346e5d3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.buscarCliente = async function () {
-    const nome = document.getElementById("buscarNome").value.trim().toLowerCase();
-    if (!nome) return alert("Digite nome de usuário.");
-
-    try {
-      const snapshot = await get(child(ref(db), 'clientes/' + nome));
-      if (snapshot.exists()) {
-        mostrarCartao(snapshot.val());
-      } else {
-        alert("Cliente não encontrado.");
-        document.getElementById("cartaoFidelidade").style.display = "none";
-      }
-    } catch (error) {
-      console.error("Erro ao buscar cliente:", error);
-      alert("Erro ao buscar cliente.");
-    }
-  };
-
-  window.mostrarCartao = function (cliente) {
-    const nomeCliente = document.getElementById("nomeCliente");
-    const areaSelos = document.getElementById("areaSelos");
-
-    nomeCliente.textContent = cliente.nome.toUpperCase();
-    nomeCliente.classList.remove("brilhante");
-    areaSelos.innerHTML = "";
-
-    for (let i = 0; i < 10; i++) {
-      const selo = document.createElement("div");
-      selo.classList.add("selo");
-      if (i < cliente.selos) selo.classList.add("ativo");
-      selo.textContent = i + 1;
-      areaSelos.appendChild(selo);
-    }
-
-    document.getElementById("cartaoFidelidade").style.display = "block";
-
-    const infoIndicacao = document.getElementById("infoIndicacao");
-
-    if (cliente.indicacoes) {
-      if (cliente.indicacoes === 2) {
-        document.getElementById("mensagemIndicacao").textContent =
-          "Você indicou 2 pessoas e ganhou 1 mês grátis!";
-        document.getElementById("modalIndicacao").style.display = "block";
-      } else {
-        const texto = cliente.indicacoes === 1 ? "1 pessoa" : `${cliente.indicacoes} pessoas`;
-        infoIndicacao.textContent = `Você indicou ${texto}.`;
-      }
-    } else {
-      infoIndicacao.textContent = "";
-    }
-
-    document.getElementById("fecharModal").addEventListener("click", () => {
-      document.getElementById("modalIndicacao").style.display = "none";
-    });
-
-    if (cliente.selos === 10) {
-      nomeCliente.classList.add("brilhante");
-    }
-
-    if (cliente.selos === 3) {
-      document.getElementById("modal3Selos").style.display = "block";
-    } else if (cliente.selos === 6) {
-      document.getElementById("modal6Selos").style.display = "block";
-    } else if (cliente.selos === 10) {
-      document.getElementById("modal10Selos").style.display = "block";
-    }
-  };
-
-  window.acessarADM = function () {
-    const senha = prompt("Digite a senha de administrador:");
-    if (senha === "Bruno@2025") {
-      localStorage.setItem("paginaAnterior", window.location.href);
-      window.location.href = "admin.html";
-    } else if (senha !== null) {
-      alert("Senha incorreta.");
-    }
-  };
-
-  window.fecharModal = function (id) {
-    document.getElementById(id).style.display = "none";
-  };
-  
-  
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado', reg))
-        .catch(err => console.error('Erro no Service Worker', err));
-    });
-  }
-  
-  
-  let deferredPrompt;
-  const btnInstalar = document.getElementById('btnInstalar');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // Impede o prompt automático
-    deferredPrompt = e;
-    btnInstalar.style.display = 'block'; // Mostra o botão
-  });
-
-  btnInstalar.addEventListener('click', async () => {
-    btnInstalar.style.display = 'none';
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        console.log('Usuário aceitou instalar');
-      } else {
-        console.log('Usuário recusou');
-      }
-      deferredPrompt = null;
-    }
-  });
-
-  // Esconde o botão se já estiver instalado
-  window.addEventListener('appinstalled', () => {
-    console.log('PWA instalado');
-    btnInstalar.style.display = 'none';
-  });
-  
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const splash = document.getElementById('splash');
-      splash.style.opacity = '0';
-      setTimeout(() => splash.remove(), 1000); // remove depois do fade
-    }, 3000); // 3 segundos
-  });
-</script>
+  <meta name="theme-color" content="#2196f3">
+  <script type="module" src="js/scripts.js"></script>
 </head>
 <body>
     
-<div id="splash">
-  <div class="splash-content">
-    <img src="icons/logo.png" alt="Logo" class="splash-logo">
-    <h1 class="splash-title">Fideliza</h1>
+  <div id="splash">
+    <div class="splash-content">
+      <img src="icons/logo.png" alt="Logo" class="splash-logo">
+      <h1 class="splash-title">Fideliza</h1>
+    </div>
   </div>
-</div>
     
   <div class="container">
     <h2>Consulte seu Cartão</h2>
@@ -177,38 +31,36 @@
     </div>
 
     <button onclick="acessarADM()" class="botao-adm">ADM</button>
-    
     <button id="btnInstalar" style="display: none;">Instalar App</button>
   </div>
 
   <!-- Modal por indicação -->
   <div class="modal-indicacao" id="modalIndicacao">
     <div class="modal-conteudo">
- <span class="fechar" id="fecharModal">&times;</span>
+      <span class="fechar" id="fecharModal">&times;</span>
       <h2>Parabéns!</h2>
       <p id="mensagemIndicacao">Você indicou 2 pessoas e ganhou <strong>1 mês grátis!</strong></p>
       <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20ao%20indicar%202%20pessoas%20%20%20." 
-       target="_blank" 
-       class="btn-whatsapp">
-      Resgatar via WhatsApp
-    </a>
+         target="_blank" 
+         class="btn-whatsapp">
+        Resgatar via WhatsApp
+      </a>
     </div>
   </div>
   
   <!-- Modal para 3 selos -->
   <div class="modal-indicacao" id="modal3Selos">
-  <div class="modal-conteudo">
-    <span class="fechar" onclick="fecharModal('modal3Selos')">&times;</span>
-    <h2>Parabéns!</h2>
-    <p>Você renovou por 3 meses e ganhou <strong>1 mês grátis!</strong></p>
-
-    <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20que%20ganhei%20ao%20renovar%20por%203%20meses." 
-       target="_blank" 
-       class="btn-whatsapp">
-      Resgatar via WhatsApp
-    </a>
+    <div class="modal-conteudo">
+      <span class="fechar" onclick="fecharModal('modal3Selos')">&times;</span>
+      <h2>Parabéns!</h2>
+      <p>Você renovou por 3 meses e ganhou <strong>1 mês grátis!</strong></p>
+      <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20que%20ganhei%20ao%20renovar%20por%203%20meses." 
+         target="_blank" 
+         class="btn-whatsapp">
+        Resgatar via WhatsApp
+      </a>
+    </div>
   </div>
-</div>
 
   <!-- Modal para 6 selos -->
   <div class="modal-indicacao" id="modal6Selos">
@@ -216,12 +68,11 @@
       <span class="fechar" onclick="fecharModal('modal6Selos')">&times;</span>
       <h2>Parabéns!</h2>
       <p>Você renovou por 6 meses e ganhou <strong>2 meses grátis!</strong></p>
-      
       <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20que%20ganhei%20ao%20renovar%20por%206%20meses." 
-       target="_blank" 
-       class="btn-whatsapp">
-      Resgatar via WhatsApp
-    </a>
+         target="_blank" 
+         class="btn-whatsapp">
+        Resgatar via WhatsApp
+      </a>
     </div>
   </div>
 
@@ -231,13 +82,13 @@
       <span class="fechar" onclick="fecharModal('modal10Selos')">&times;</span>
       <h2>Parabéns!</h2>
       <p>Você completou todos os selos e ganhou <strong>3 meses grátis!</strong></p>
-      
       <a href="https://wa.me/5581982258462?text=Olá!%20Quero%20resgatar%20meu%20%20Premium%20grátis%20que%20ganhei%20ao%20Completar%20todos%20os%20selos." 
-       target="_blank" 
-       class="btn-whatsapp">
-      Resgatar via WhatsApp
-    </a>
+         target="_blank" 
+         class="btn-whatsapp">
+        Resgatar via WhatsApp
+      </a>
     </div>
   </div>
+ 
 </body>
 </html>
