@@ -99,7 +99,6 @@ document.getElementById("fecharModal").addEventListener("click", () => {
   document.getElementById("modalIndicacao").style.display = "none";
 });
 
-// 🔐 Função para gerar o hash SHA-256 da senha digitada
 async function gerarHash(texto) {
   const encoder = new TextEncoder();
   const data = encoder.encode(texto);
