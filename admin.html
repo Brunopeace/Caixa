@@ -27,7 +27,6 @@
   <div id="modalEditar" class="modal">
     <div class="modal-content">
       <span class="close" onclick="fecharModalEditar()">&times;</span>
-
       <h3>Editar Selos e Indicações</h3>
       <input type="text" id="nomeEditar" placeholder="Nome do cliente">
       <input type="number" id="novoValorSelos" placeholder="Novo número de selos (0 a 10)" min="0" max="10">
@@ -38,6 +37,10 @@
       <input type="text" id="nomeExcluir" placeholder="Nome do cliente">
   <button onclick="excluirCliente()">Excluir</button>     
       
+      <h3>Marcar como Premium Entregue</h3>
+<input type="text" id="nomePremium" placeholder="Nome do cliente">
+<button onclick="marcarPremiumEntregue()">Marcar como Entregue</button>
+     
      <div class="section">
       <h3>Clientes Cadastrados</h3>
       <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()" />
