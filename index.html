@@ -37,16 +37,21 @@
 <!-- Modal para senha do ADM -->
 <div id="modalADM" class="modal">
   <div class="modal-conteudo">
-<img src="icons/icon-512.png" alt="Logo" class="logo-modal" />
+    <!-- Botão X para fechar -->
+    <span class="fechar-modal" onclick="fecharModalADM()">✖</span>
+
+    <!-- Logo -->
+    <img src="icons/icon-512.png" alt="Logo" class="logo-modal" />
+    
     <h2>Acesso Administrativo</h2>
     <input type="password" id="senhaADM" placeholder="Digite a senha">
     <div class="botoes">
 <button onclick="verificarSenhaADM()">Entrar</button>
-<button onclick="fecharModalADM()">Cancelar</button>
     </div>
     <p id="erroSenha" style="color: red; display: none;">❌ Senha incorreta.</p>
   </div>
 </div>
+
     <button id="btnInstalar" style="display: none;">Instalar App</button>
   </div>
 
