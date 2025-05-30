@@ -27,6 +27,20 @@ body {
   display: block;
 }
 
+
+
+.fechar-modal {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 22px;
+  color: #ff0000;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 1000;
+  transition: color 0.2s ease;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -39,6 +53,7 @@ body {
 }
 
 .modal-conteudo {
+  position: relative;
   background: white;
   padding: 20px;
   border-radius: 12px;
@@ -59,21 +74,25 @@ body {
 }
 
 .modal-conteudo .botoes button {
-  padding: 8px 16px;
-  margin: 5px;
-  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 16px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  font-weight: 600;
 }
 
-.modal-conteudo .botoes button:first-child {
-  background: #007bff;
-  color: white;
+.modal-conteudo .botoes button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-.modal-conteudo .botoes button:last-child {
-  background: #ccc;
+.modal-conteudo .botoes button:active {
+  transform: scale(0.98);
 }
 
 @keyframes fadeIn {
