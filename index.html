@@ -19,6 +19,7 @@
   </div>
     
   <div class="container">
+<img src="icons/icon-512.png" alt="Logo" class="logo-modal" />
     <h2>Consulte seu Cartão</h2>
     <input type="text" id="buscarNome" placeholder="Digite seu nome de usuário">
     <button class="buscarNome" onclick="buscarCliente()">Ver meus selos</button>
@@ -36,11 +37,12 @@
 <!-- Modal para senha do ADM -->
 <div id="modalADM" class="modal">
   <div class="modal-conteudo">
+<img src="icons/icon-512.png" alt="Logo" class="logo-modal" />
     <h2>Acesso Administrativo</h2>
     <input type="password" id="senhaADM" placeholder="Digite a senha">
     <div class="botoes">
-      <button onclick="verificarSenhaADM()">Entrar</button>
-      <button onclick="fecharModalADM()">Cancelar</button>
+<button onclick="verificarSenhaADM()">Entrar</button>
+<button onclick="fecharModalADM()">Cancelar</button>
     </div>
     <p id="erroSenha" style="color: red; display: none;">❌ Senha incorreta.</p>
   </div>
