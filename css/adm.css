@@ -51,7 +51,6 @@ body {
 }
 
 
-
 h2 {
   font-size: 24px;
   color: #1e3a8a;
@@ -143,6 +142,12 @@ button:hover {
 
 .lista-clientes div:hover {
   background-color: #e0f2fe;
+}
+
+.premium-entregue {
+  color: green;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 /* Modal */
