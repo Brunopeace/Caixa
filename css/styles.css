@@ -21,6 +21,12 @@ body {
   display: block;
 }
 
+.logo-cliente {
+  width: 100px;
+  margin: 0 auto 15px;
+  display: block;
+}
+
 .modal {
   display: none;
   position: fixed;
