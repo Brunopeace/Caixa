@@ -98,7 +98,13 @@ window.onload = function () {
       const data = snapshot.val();
       Object.values(data).forEach(cliente => {
         const div = document.createElement("div");
-        div.textContent = `${cliente.nome.toUpperCase()} - ${cliente.selos} selos - ${cliente.indicacoes || 0} indicações`;
+        
+        let statusPremium = '';
+if (cliente.indicacoes === 2) {
+  statusPremium = '<span class="premium-entregue">✅ PREMIUM ENTREGUE</span>';
+}
+
+div.innerHTML = `${cliente.nome.toUpperCase()} - ${cliente.selos} selos - ${cliente.indicacoes || 0} indicações ${statusPremium}`;
         lista.appendChild(div);
       });
     } else {
@@ -120,6 +126,31 @@ window.filtrarClientes = function () {
     const texto = div.textContent.toLowerCase();
     div.style.display = texto.includes(termo) ? "block" : "none";
   });
+}
+
+// Marcar premiu entregue
+window.marcarPremiumEntregue = async function () {
+  const nome = document.getElementById("nomePremium").value.trim().toLowerCase();
+  if (!nome) return alert("Digite o nome do cliente.");
+
+  try {
+    const clienteRef = child(ref(db), 'clientes/' + nome);
+    const snapshot = await get(clienteRef);
+
+    if (snapshot.exists()) {
+      const cliente = snapshot.val();
+      cliente.premiumEntregue = true;
+
+      await set(ref(db, 'clientes/' + nome), cliente);
+      alert("Cliente marcado como Premium entregue!");
+      document.getElementById("nomePremium").value = "";
+    } else {
+      alert("Cliente não encontrado.");
+    }
+  } catch (error) {
+    console.error("Erro ao marcar como entregue:", error);
+    alert("Erro ao atualizar cliente.");
+  }
 }
 
 // Exportar backup para arquivo JSON
