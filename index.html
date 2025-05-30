@@ -30,7 +30,21 @@
       <hr>
     </div>
 
-    <button onclick="acessarADM()" class="botao-adm">ADM</button>
+    <!-- Botão ADM -->
+<button onclick="abrirModalADM()" class="botao-adm">ADM</button>
+
+<!-- Modal para senha do ADM -->
+<div id="modalADM" class="modal">
+  <div class="modal-conteudo">
+    <h2>Acesso Administrativo</h2>
+    <input type="password" id="senhaADM" placeholder="Digite a senha">
+    <div class="botoes">
+      <button onclick="verificarSenhaADM()">Entrar</button>
+      <button onclick="fecharModalADM()">Cancelar</button>
+    </div>
+    <p id="erroSenha" style="color: red; display: none;">❌ Senha incorreta.</p>
+  </div>
+</div>
     <button id="btnInstalar" style="display: none;">Instalar App</button>
   </div>
 
