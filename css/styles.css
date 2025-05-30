@@ -16,8 +16,8 @@ body {
 }
 
 .logo-modal {
-  width: 100px;        /* ajuste conforme o tamanho da sua logo */
-  margin: 0 auto 15px; /* centraliza e adiciona espaço abaixo */
+  width: 100px;
+  margin: 0 auto 15px;
   display: block;
 }
 
