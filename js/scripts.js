@@ -99,6 +99,7 @@ document.getElementById("fecharModal").addEventListener("click", () => {
   document.getElementById("modalIndicacao").style.display = "none";
 });
 
+// 🔐 Função para gerar o hash SHA-256 da senha digitada
 async function gerarHash(texto) {
   const encoder = new TextEncoder();
   const data = encoder.encode(texto);
@@ -106,20 +107,32 @@ async function gerarHash(texto) {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
+
+// Hash da senha correta
 const SENHA_HASH = "cdbd3bbf30c1038474ca3e79bb0209c6493493700450a9d7bf6090382c663dd2";
 
-// 🔐 Acesso ao Painel Administrativo
-window.acessarADM = async function () {
-  const senha = prompt("Digite a senha de administrador:");
-  if (senha === null) return;
+// Abre o modal
+window.abrirModalADM = function () {
+  document.getElementById("modalADM").style.display = "flex";
+  document.getElementById("senhaADM").value = "";
+  document.getElementById("erroSenha").style.display = "none";
+};
 
+// Fecha o modal
+window.fecharModalADM = function () {
+  document.getElementById("modalADM").style.display = "none";
+};
+
+// Verifica a senha digitada
+window.verificarSenhaADM = async function () {
+  const senha = document.getElementById("senhaADM").value;
   const hashDigitado = await gerarHash(senha);
 
   if (hashDigitado === SENHA_HASH) {
     localStorage.setItem("paginaAnterior", window.location.href);
     window.location.href = "admin.html";
   } else {
-    alert("❌ Senha incorreta. Acesso negado.");
+    document.getElementById("erroSenha").style.display = "block";
   }
 };
 
