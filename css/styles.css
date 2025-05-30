@@ -15,6 +15,66 @@ body {
   margin: 0;
 }
 
+.logo-modal {
+  width: 100px;        /* ajuste conforme o tamanho da sua logo */
+  margin: 0 auto 15px; /* centraliza e adiciona espaço abaixo */
+  display: block;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-conteudo {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-conteudo input {
+  width: 90%;
+  padding: 10px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.modal-conteudo .botoes button {
+  padding: 8px 16px;
+  margin: 5px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-conteudo .botoes button:first-child {
+  background: #007bff;
+  color: white;
+}
+
+.modal-conteudo .botoes button:last-child {
+  background: #ccc;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* Tela Splash */
 #splash {
   position: fixed;
