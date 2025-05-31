@@ -15,6 +15,38 @@ body {
   margin: 0;
 }
 
+.mensagem-erro {
+  display: none;
+  background-color: #ffe5e5;
+  color: #c62828;
+  padding: 10px;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  margin-top: 15px;
+  animation: aparecerErro 0.3s ease-in-out;
+}
+
+#erroSenha {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#erroSenha span {
+    color: red;
+}
+
+@keyframes aparecerErro {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 .logo-modal {
   width: 100px;
   margin: 0 auto 15px;
