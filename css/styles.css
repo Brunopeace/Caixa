@@ -31,10 +31,6 @@ body {
     font-weight: bold;
 }
 
-#erroSenha span {
-    color: red;
-}
-
 @keyframes aparecerErro {
   from {
     opacity: 0;
